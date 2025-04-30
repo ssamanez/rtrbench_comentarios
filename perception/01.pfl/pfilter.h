@@ -63,7 +63,11 @@ class ParticleFilter {
         std::vector<double> getBelief() const;
         void printOverallStats(std::string header) const;
         void printAllParticles(std::string header) const;
-
+	double resolution;
+	// Agrege esto al codigo
+	int numParticles;
+	std::vector<Particle> particles;
+	
     private:
         void initializeParticles(EnvMap *occGrid, int numParticles);
         void initializeMotionModel();
@@ -73,8 +77,8 @@ class ParticleFilter {
         double calcProbability(double zkt, double zktStar);
 
         EnvMap *occGrid;
-        int numParticles;
-        std::vector<Particle> particles;
+        //int numParticles;
+        //std::vector<Particle> particles;
 
         // Motion parameters
         double alpha1, alpha2, alpha3, alpha4;
@@ -82,7 +86,7 @@ class ParticleFilter {
         // Sensor parameters
         double zHit, zShort, zMax, zRand;
         double sigmaHit, lambdaShort;
-        double minProbability, maxRange, resolution;
+        double minProbability, maxRange;
         double sensorOffset;
         int subsample;
 

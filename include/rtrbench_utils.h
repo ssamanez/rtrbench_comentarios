@@ -367,6 +367,7 @@ void matrixTranspose(T **A, T **B, int row, int col) {
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             B[j][i] = A[i][j];
+            //printf("Valor A: %lf  y Valor B: %lf - Valor i: %i y Valor j: %i \n", A[i][j], B[j][i], row, col);
         }
     }
 }

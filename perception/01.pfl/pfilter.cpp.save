@@ -59,8 +59,6 @@ void ParticleFilter::initializeParticles(EnvMap *occGrid, int numParticles) {
     assert(freeXs->size() == freeYs->size());
     int numFreeLocs = static_cast<int>(freeXs->size());
 
-    printf("ORIGIN_InitializeParticles: %i\n",numParticles);
-
     //std::default_random_engine intGen;
     std::uniform_int_distribution<int> intDist(0, numFreeLocs - 1);
 
@@ -76,20 +74,14 @@ void ParticleFilter::initializeParticles(EnvMap *occGrid, int numParticles) {
         double y = freeYs->at(idx);
         assert(occGrid->isFree(static_cast<int>(x), static_cast<int>(y)));
 
-	//Vamos a dejar de lado el occGrid que tiene que ver con el envMap
-        //x *= occGrid->getResolution();
-        //y *= occGrid->getResolution();
-	
-	//Valor pre determinado de todos nuestras particulas 
-	x = 670;
-	y = 4380;
-		
+        x *= occGrid->getResolution();
+        y *= occGrid->getResolution();
+
         //double theta = realDist(realGen);
 	double theta = 2;
         assert(theta >= -PI && theta < PI);
 
-        //double weight = 1.0 / numParticles;
-	double weight = 10.0;
+        double weight = 1.0 / numParticles;
         this->particles.push_back(Particle(x, y, theta, weight));
     }
 }
@@ -110,7 +102,7 @@ void ParticleFilter::updateMotion(READING *prevOdometry, \
 
     if (std::abs(xDiff) + std::abs(yDiff) + std::abs(thetaDiff) < 1e-10) {
         // Avoid the overheads if the difference is minor
-	printf("Omitiendo ORIGIN_UPDATE_MOTION por diferencias minimas.\n");
+	printf("Omitiendo por diferencias minimas.\n");
 	printf("Xdiff=%f , Ydiff=%f , Thetadiff=%f\n",xDiff,yDiff, thetaDiff);
         return;
     }
@@ -151,11 +143,8 @@ void ParticleFilter::updateMotion(READING *prevOdometry, \
         //this->particles[i].theta = wrapToPi(this->particles[i].theta\
         //        + dRh1 + dRh2);
 	this->particles[i].theta = dRot1 + dRot2;
-	printf("ORIGIN_UPDATE_MOTION - Partícula %d actualizada: X=%f, Y=%f, Theta=%f\n", i, particles[i].x, particles[i].y, particles[i].theta);
-
-
     }
-  
+    printf("holaaaaaaaa");
 }
 
 void ParticleFilter::initializeSensorModel() {
@@ -175,10 +164,8 @@ void ParticleFilter::initializeSensorModel() {
 }
 
 void ParticleFilter::updateSensor(READING *laserReading) {
-	printf("ORIGIN_UPDATE_SENSOR \n");
     for (int i = 0; i < this->numParticles; i++) {
-        /*
-	double x = this->particles[i].x;
+        double x = this->particles[i].x;
         double y = this->particles[i].y;
         double theta = this->particles[i].theta;
 
@@ -197,11 +184,8 @@ void ParticleFilter::updateSensor(READING *laserReading) {
             double readDist = laserReading->at(rIdx);
             probability *= this->calcProbability(readDist, expDist);
         }
-	*/
-        //this->particles[i].w = probability;
-	this->particles[i].w = 1.0 / this->numParticles;
-	printf("Particula %d tiene un peso de %d \n", i, particles[i].w);
-	
+
+        this->particles[i].w = probability;
     }
 }
 
@@ -357,6 +341,7 @@ std::vector<double> ParticleFilter::getBelief() const {
     // locality, that is achieved by putting <x, y, theta>s nearby
     double xMean = 0, yMean = 0, thetaMean = 0;
     for (int i = 0; i < this->numParticles; i++) {
+	
         Particle p = this->particles[i];
         xMean += p.x;
         yMean += p.y;

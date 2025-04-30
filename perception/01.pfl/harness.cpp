@@ -123,27 +123,42 @@ int main(int argc, const char **argv) {
     outputLog.push_back(pf->getBelief());
 
     // ROI begins
-    zsim_roi_begin();
+    //zsim_roi_begin();
 
     for (int i = 1 /*Skip the first reading*/; \
-            i < static_cast<int>(odometryLog->size()); i++) {
+            i < 18/*static_cast<int>(odometryLog->size())*/; i++) {
         READING *prevOdometry = &odometryLog->at(i-1);
         READING *currOdometry = &odometryLog->at(i);
         assert(static_cast<int>(prevOdometry->size()) == NUM_ODOMETRY_MEASUR);
         assert(static_cast<int>(currOdometry->size()) == NUM_ODOMETRY_MEASUR);
-
-        READING *laserReading = &laserLog->at(i);
+	    
+        printf("ORIGIN_ROI_Initialize: Número de partículas: %i, Resolución: %f\n", pf->numParticles, pf->resolution);
+        printf("ORIGIN_Odometry (Prev): X=%f, Y=%f, Theta=%f\n", prevOdometry->at(0), prevOdometry->at(1), prevOdometry->at(2));
+        printf("ORIGIN_Odometry (Curr): X=%f, Y=%f, Theta=%f\n", currOdometry->at(0), currOdometry->at(1), currOdometry->at(2));
+          
+	READING *laserReading = &laserLog->at(i);
         assert(static_cast<int>(laserReading->size()) == NUM_LASER_MEASUR);
 
         pf->updateMotion(prevOdometry, currOdometry);
+	for (int i = 0; i < pf->numParticles; i++) {
+	printf("ORIGIN_UpdateMotion - Valor X, Y, THETA de las particulas \n");
+	printf("Iteracion: %i\n", i);
+        printf("X=%f\n",pf->particles[i].x);
+        printf("Y=%f\n",pf->particles[i].y);
+        printf("THETA=%f\n",pf->particles[i].theta);
+        }
+  
+
+	
         pf->updateSensor(laserReading);
         pf->resample();
 
+	
         outputLog.push_back(pf->getBelief());
         if (i >= maxUpdates) break;
     }
 
-    zsim_roi_end();
+    //zsim_roi_end();
     // ROI ends
 
     // Write the output log

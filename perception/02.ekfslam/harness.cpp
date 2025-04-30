@@ -92,7 +92,10 @@ int main(int argc, const char **argv) {
 
     std::vector<double> initialMeasurement = inputLog.front();
     size_t numLandmarks = static_cast<int>(initialMeasurement.size()) / 2;
+    
+    // ACA ESTA EL PORQUE!!!!!
     inputLog.erase(inputLog.begin());
+    // ESTA LINEA ELIMINA el "initialMeasurement" del inputlog
 
     ExtKalmanFillter *ekf = new ExtKalmanFillter(sigX2, sigY2, sigAlpha2, \
             sigBeta2, sigR2, initialMeasurement);
@@ -103,7 +106,13 @@ int main(int argc, const char **argv) {
     zsim_roi_begin();
 
     outputLog.push_back(ekf->getState());
+
+    for(u_int i=0; i<inputLog.size(); i++){
+        printf("Iteracion %i: Tamaño %li \n", i, inputLog[i].size() );
+    }
+    
     for (auto input : inputLog) {
+        printf("Size = %li \n" , input.size());
         if (input.size() == 2) {
             // Control input
             ekf->predict(input[0], input[1]);

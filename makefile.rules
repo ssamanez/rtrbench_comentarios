@@ -13,7 +13,7 @@ all: $(EXE)
 performance: CXXFLAGS += -DNASSERT
 performance: $(EXE)
 
-debug: CXXFLAGS += -DDEBUG -g
+debug: CXXFLAGS += -DDEBUG -g -O0
 debug: $(EXE)
 
 datarace:

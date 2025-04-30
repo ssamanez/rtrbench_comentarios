@@ -1,0 +1,6 @@
+ ./pfl.out --map ./input-maps/wean.dat --measurements ./input-measurements/log1.txt --output hoy4 --particles 10 --subsample 1 --updates 18
+
+
+make 
+
+make clean 
